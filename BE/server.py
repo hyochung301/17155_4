@@ -49,10 +49,26 @@ def login():
         return jsonify({"message": "Login successful", "status": "success"}), 200
     return jsonify({"message": "Invalid credentials", "status": "fail"}), 401
 
+
+# dummy data for hardware sets
+project_hardware_sets = {
+    1: {
+        'available': 5,
+        'capacity': 10
+    },
+    2: {
+        'available': 10,
+        'capacity': 20
+    }
+}
+
 @app.route('/projects/<int:project_id>/checkout', methods=['POST'])
 def checkout_hardware(project_id):
+    '''
     if 'user' not in session:
         return jsonify({'message': 'Unauthorized'}), 401
+    '''
+
 
     qty = request.json.get('qty', 1)  # Default to 1 if not specified
     hardware_set = project_hardware_sets.get(project_id)
