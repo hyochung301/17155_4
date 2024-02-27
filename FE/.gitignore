@@ -21,3 +21,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+node_modules/
+*.pyc
+node_modules/
+.env
+build/
+coverage/
+*.log
+*.pyc
+__pycache__/
+fl_venv/
