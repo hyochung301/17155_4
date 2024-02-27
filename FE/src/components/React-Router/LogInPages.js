@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 //import { LinkContainer } from "react-router-bootstrap";
 
 function LogInPage() {
@@ -43,8 +44,10 @@ const handleSubmit = async (e) => {
     console.log(data);
     if (data.status === "success" ){
         setIsCorrect(true);
+        // setUserLoggedIn(username);
         console.log("Correct");
-        navigate('/ProjectManagement'); // will redirect to the ProjectManagement page when you 
+        navigate(`/projectManagement/${username}`);
+
         setIsCorrect(true);
 
     }

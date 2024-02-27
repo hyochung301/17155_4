@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Form(props) {
     // Function to handle input change
@@ -7,6 +7,10 @@ function Form(props) {
         props.onChange(event.target.value);
     };
 
+    
+
+
+
     return (
         <div>
           <center>
@@ -14,7 +18,7 @@ function Form(props) {
                 <label>
                     {props.text}
                     <input
-                        type="text"
+                        type={props.text === 'Password:' ? 'password' : 'text'} 
                         value={props.value} // Set the value of the input field
                         onChange={handleChange} // Call handleChange function on change
                     />

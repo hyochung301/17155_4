@@ -1,5 +1,6 @@
 
-import React from "react";
+// import React from "react";
+import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
@@ -17,6 +18,7 @@ import ProjecManagement from "./components/React-Router/ProjectManagement";
 
 // React-Router 
 function App() {
+  const [userLoggedIn, setUserLoggedIn] = useState(' ');
   return (
     <div>
        <Router>
@@ -35,7 +37,9 @@ function App() {
         <Routes>
           <Route path="/" element={<LogInPage/>}></Route>
           {/* <Route path="/about" element={ <About/>}></Route> */}
-          <Route path="/projectManagement" element={<ProjecManagement />}></Route>
+          <Route path="/projectManagement/:username" element={<ProjecManagement />} />
+
+
         </Routes>
       </Router>
     </div>
