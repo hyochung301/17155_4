@@ -34,6 +34,7 @@ def decrypt(encryptedText, N, D):
 
 def test(filename):
     # read file and store the ID and passwords
+    # Peter !! we will need to change the format of this data for it to work with mongoDB. Should have each user be a seperate dictonary and each user data value be its own name:data pair
     table = {
         "asamant": "Temp123",
         "aissa": "TheKing%^&",
