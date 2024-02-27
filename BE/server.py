@@ -42,8 +42,8 @@ def login():
     password = data.get('password')
     
     # Assuming you want to decrypt data received
-    decrypted_username = decrypt(username, 3, 1)  # Adjust N, D as per your encryption logic
-    decrypted_password = decrypt(password, 3, 1)
+    decrypted_username = username
+    decrypted_password = password
     
     if decrypted_username in users and users[decrypted_username] == decrypted_password:
         return jsonify({"message": "Login successful", "status": "success"}), 200
