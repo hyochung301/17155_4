@@ -1,15 +1,18 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from encryption import decrypt
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
+
+CORS(app)
 
 users = {"user1": {"password": "password1", "projects": []}}
 checkout_elements = {"item1": {"available": 5, "capacity": 10}}
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-    return 'Index Page'
+    return send_from_directory(app.static_folder, "index.html")
+
 
 @app.route('/checkout-elements', methods=['GET'])
 def get_checkout_elements():
