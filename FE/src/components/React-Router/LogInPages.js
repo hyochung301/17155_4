@@ -14,6 +14,11 @@ function LogInPage() {
     const [password, setPassword] = useState(' ');
     const [isCorrect, setIsCorrect] = useState(true);
     const [CorrectPass, GetCorrectPass] = useState(' ');
+    const [Newusername, setNewUsername] = useState(' ');
+    const [Newpassword, setNewPassword] = useState(' ');
+    const [confirmNewpassword, setconfirmNewPassword] = useState(' ');
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [UserAlreadyExists, setUserAlreadyExists] = useState(true);
 
     // Function to handle username input change
     const handleUsernameChange = (value) => {
@@ -25,7 +30,23 @@ function LogInPage() {
         setPassword(value);
     };
 
-    // Function to handle form submission
+        // Function to handle new username input change
+        const handleNewUsernameChange = (value) => {
+            setNewUsername(value);
+        };
+    
+        // Function to handle new password input change
+        const handleNewPasswordChange = (value) => {
+            setNewPassword(value);
+        };
+        
+        // Function to handle confirm password input change
+        const handleConfirmPasswordChange = (value) => {
+            setconfirmNewPassword(value);
+        };        
+
+
+
 // Function to handle form submission
 const handleSubmit = async (e) => {
     // Send username and password elsewhere
@@ -36,7 +57,7 @@ const handleSubmit = async (e) => {
     const response = await fetch("/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({username, password})
+        body: JSON.stringify({userID:username, password:password})
     });
 
     // Parse the response as JSON
@@ -53,12 +74,50 @@ const handleSubmit = async (e) => {
     }
     else{
         setIsCorrect(false);
-        console.log("Incorrect");
+        console.log("User Already Exists");
     }
 
-   
+  
+};
 
-    // Check if the password is correct
+// Function to handle new user form submission
+const handleNewUserSubmit = async (e) => {
+    // Send username and password elsewhere and confirmation of password
+    console.log("Username:", Newusername);
+    console.log("Password:", Newpassword);
+    console.log("Confirm Password:", confirmNewpassword);
+
+    //check to see if the two passwords don't match
+    if (Newpassword !== confirmNewpassword){
+        console.log("Passwords do not match");
+        setPasswordsMatch(false);
+        return;
+    }
+
+    // Make a POST request to /NewUser with the username and password
+    const response = await fetch("/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({userID:Newusername, password:Newpassword})
+    });
+
+    // Parse the response as JSON
+    const data = await response.json();
+    console.log(data);
+    if (data.status === "success" ){
+        
+        // setUserLoggedIn(username);
+        console.log("New User was added");
+        navigate(`/projectManagement/${Newusername}`);
+
+        
+
+    }
+    else{
+        setUserAlreadyExists(false);
+        console.log("User Already Exists");
+    }
+
   
 };
     
@@ -66,6 +125,10 @@ const handleSubmit = async (e) => {
 
 
     return (
+        <>
+        <center>
+            <h1>Returning User? Please Log In</h1>
+        </center>
         <div className='LogIn'>
             <Form
                 text='Username:'
@@ -87,6 +150,40 @@ const handleSubmit = async (e) => {
                 {/* </Link> */}
             </center>
         </div>
+        <br />
+        <br />
+        <center>
+            <h1>New User? Please Create a profile</h1>
+        </center>
+        <div className='NewUser'>
+        <Form
+                text='Username:'
+                label='Enter Your Username'
+                onChange={handleNewUsernameChange} // Pass the change handler function
+            />
+            <br />
+            <Form
+                text='password:'
+                label='Enter Your Password'
+                onChange={handleNewPasswordChange} // Pass the change handler function
+            />
+                        <Form
+                text='password:'
+                label='Confirm Your Password'
+                onChange={handleConfirmPasswordChange} // Pass the change handler function
+            />
+            <br />
+            <center>
+                {/* <Link to={"/LogInAttempt/"+username+"/"+password}> */}
+                <button onClick={handleNewUserSubmit}>Submit</button>
+                {!(passwordsMatch) && <><br></br> <center><p>Passwords Do Not Match, Pls Try Again</p></center> </>} 
+                {!(UserAlreadyExists) && <><br></br> <center><p>User Already Exists, Pls Try Again</p></center> </>}
+                {/* </Link> */}
+            </center>
+
+
+        </div>
+        </>
     );
 }
 
