@@ -57,7 +57,7 @@ const handleSubmit = async (e) => {
     const response = await fetch("/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({userID:username, password:password})
+        body: JSON.stringify({username, password})
     });
 
     // Parse the response as JSON
