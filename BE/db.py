@@ -59,9 +59,12 @@ projectDB = db["projects"]
 def get_all_projects():
     return list(projectDB.find())
 
-def project_exist(projectID):
+def get_project(projectID):
     myquery={"projectID":projectID}
-    project = projectDB.find_one(myquery)
+    return projectDB.find_one(myquery)
+
+def project_exist(projectID):
+    project = get_project(projectID)
     if project == None:
         return False
     return True
@@ -76,14 +79,26 @@ def project_new(projectID,hardwareSets,users):
         projectDB.insert_one(newProject)
     else:
         return "project exists" # will probably need to change this to an actual error code system
-    
+  
 def project_delete(projectID):
     if project_exist(projectID):
-        myquery={"projectID":projectID}
-        project = projectDB.find_one(myquery)
+        project = get_project(projectID)
         projectDB.remove_one(project)
     else:
         return "cant find project"
+
+
+
+def project_modify(projectID,hardwareSets,users):
+    if project_exist(projectID):
+        project = get_project(projectID)
+        if hardwareSets != None:
+            project["hardwareSets"] = hardwareSets
+            project["users"] = users
+        myquery={"projectID":projectID}
+        projectDB.update_one(myquery,project)
+    else:
+        return "Project Doesn't Exist"
     
 
 def project_add_member(projectID, username):
