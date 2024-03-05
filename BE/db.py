@@ -69,16 +69,13 @@ def project_exist(projectID):
         return False
     return True
 
-def project_new(projectID,hardwareSets,users):
-    if not project_exist(projectID):
-        newProject = {
-            "projectID" :projectID,
+def project_new(hardwareSets,users): #project ID's should be created automatically
+    newProject = {
+            #"projectID" :projectID,
             "hardwareSets" : hardwareSets,
             "users" : users
         }
-        projectDB.insert_one(newProject)
-    else:
-        return "project exists" # will probably need to change this to an actual error code system
+    projectDB.insert_one(newProject)
   
 def project_delete(projectID):
     if project_exist(projectID):

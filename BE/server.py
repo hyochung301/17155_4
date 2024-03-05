@@ -177,6 +177,46 @@ def leave_project():
     db.project_remove_member(project, userID)
     return jsonify({"message": "Project left", "status": "success"}), 200
 
+@app.route('/new-project', methods=['POST'])
+def new_project():
+    """
+    Endpoint creating a new project
+
+    Parameters:
+    - projectdata (dict) : The data of the new project
+    Returns:
+    - JSON response with a message and status code:
+        - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
+        - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
+    """
+    data = request.json
+    project = data.get('projectdata')
+    db.project_new(project["hardwareSets"],project["users"])
+    if project["hardwareSets"] == None or project["users"] == None:
+        return jsonify({"message": "Missing Data!", "status": "fail"}), 400
+    return jsonify({"message": "Project left", "status": "success"}), 200
+
+@app.route('/modify-project', methods=['POST'])
+def modify_project():
+    """
+    Endpoint for modifying a project
+
+    Parameters:
+    - projectdata (dict) : The data of the new project
+    Returns:
+    - JSON response with a message and status code:
+        - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404
+        - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
+    """
+    data = request.json
+    project = data.get('projectdata')
+    projectID =  data.get('project')
+    db.project_modify(projectID,project["hardwareSets"],project["users"])
+    if not db.project_exist(project):
+        return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
+    return jsonify({"message": "Project left", "status": "success"}), 200
+
+
 
 # dummy data for hardware sets
 project_hardware_sets = {
