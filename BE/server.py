@@ -187,14 +187,14 @@ def new_project():
     Returns:
     - JSON response with a message and status code:
         - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
-        - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
+        - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
     """
     data = request.json
     project = data.get('projectdata')
-    db.project_new(project["hardwareSets"],project["users"])
+    id = db.project_new(project["hardwareSets"],project["users"])
     if project["hardwareSets"] == None or project["users"] == None:
         return jsonify({"message": "Missing Data!", "status": "fail"}), 400
-    return jsonify({"message": "Project left", "status": "success"}), 200
+    return jsonify({"message": "Project Created","id": id, "status": "success"}), 200
 
 @app.route('/modify-project', methods=['POST'])
 def modify_project():
@@ -214,7 +214,7 @@ def modify_project():
     db.project_modify(projectID,project["hardwareSets"],project["users"])
     if not db.project_exist(project):
         return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
-    return jsonify({"message": "Project left", "status": "success"}), 200
+    return jsonify({"message": "Project Modified", "status": "success"}), 200
 
 
 

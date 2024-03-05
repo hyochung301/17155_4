@@ -75,7 +75,8 @@ def project_new(hardwareSets,users): #project ID's should be created automatical
             "hardwareSets" : hardwareSets,
             "users" : users
         }
-    projectDB.insert_one(newProject)
+    result = projectDB.insert_one(newProject)
+    return result.inserted_id
   
 def project_delete(projectID):
     if project_exist(projectID):
