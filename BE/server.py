@@ -185,7 +185,7 @@ def join_project():
         - If the user successfully joins the project, returns {"message": "Project joined", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = data.get('username')
+    userID = encrypt(data.get('username'))
     project_id = data.get('projectid')
     #check if user exists
     if db.user_exist(userID) == False:
@@ -216,7 +216,7 @@ def leave_project():
         - If the user successfully leaves the project, returns {"message": "Project left", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = data.get('username')
+    userID = encrypt(data.get('username'))
     project_id = data.get('projectid')
     if db.user_exist(userID) == False:
         return jsonify({"message": "User not found", "status": "fail"}), 404
@@ -230,29 +230,29 @@ def leave_project():
     return jsonify({"message": "Project left", "status": "success"}), 200
 
 
-@app.route('/modify-project', methods=['POST'])
-def modify_project():
-    """
-    Endpoint for modifying a project
+# @app.route('/modify-project', methods=['POST'])
+# def modify_project():
+#     """
+#     Endpoint for modifying a project
 
-    Parameters:
-    - projectid (int) : The id of the project
-    - description (str) : The description of the project
-    - projectName (str) : The name of the project
-    - hardwareSets (list) : The list of hardware sets in the project
-    - users (list) : The list of users in the project
+#     Parameters:
+#     - projectid (int) : The id of the project
+#     - description (str) : The description of the project
+#     - projectName (str) : The name of the project
+#     - hardwareSets (list) : The list of hardware sets in the project
+#     - users (list) : The list of users in the project
 
-    Returns:
-    - JSON response with a message and status code:
-        - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404
-        - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
-    """
-    data = request.json
-    project_id =  data.get('projectid')
-    db.project_modify(project_id, data.get('hardwareSets'), data.get('users'), data.get('description'), data.get('projectName'))
-    if not db.project_exist(project_id):
-        return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
-    return jsonify({"message": "Project Modified", "status": "success"}), 200
+#     Returns:
+#     - JSON response with a message and status code:
+#         - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404
+#         - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
+#     """
+#     data = request.json
+#     project_id =  data.get('projectid')
+#     db.project_modify(project_id, data.get('hardwareSets'), data.get('users'), data.get('description'), data.get('projectName'))
+#     if not db.project_exist(project_id):
+#         return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
+#     return jsonify({"message": "Project Modified", "status": "success"}), 200
 
 
 
