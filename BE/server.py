@@ -121,6 +121,31 @@ def delete_user():
 
 # ********************************** Project Management Endpoints **********************************
 
+@app.route('/new-project', methods=['POST'])
+def new_project():
+    """
+    Endpoint creating a new project
+
+    Parameters:
+    - projectid (int) : The id of the new project
+    - projectDescription (str) : The description of the new project
+    - projectName (str) : The name of the new project
+
+    Returns:
+    - JSON response with a message and status code:
+        - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
+        - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
+    """
+    data = request.json
+    projectid = data.get('projectid')
+    project_description = data.get('projectDescription')
+    project_name = data.get('projectName')
+    # if project already exists return error
+    if db.project_exist(projectid):
+        return jsonify({'message': 'Project already exists', "status": "fail"}), 400
+    id = db.project_new(projectID=projectid, description=project_description, projectName=project_name)
+    return jsonify({"message": "Project Created","id": id, "status": "success"}), 200
+
 @app.route('/projects', methods=['GET'])
 def get_projects():
     """
@@ -150,7 +175,7 @@ def join_project():
 
     Parameters:
     - username (str): The username of the user joining the project.
-    - project (str): The name of the project to join.
+    - projectid (int) : The id of the project
 
     Returns:
     - JSON response with a message and status code:
@@ -161,18 +186,18 @@ def join_project():
     """
     data = request.json
     userID = data.get('username')
-    project = data.get('project')
+    project_id = data.get('projectid')
     #check if user exists
     if db.user_exist(userID) == False:
         return jsonify({"message": "User not found", "status": "fail"}), 404
     #check if project exists
-    if not db.project_exist(project):
+    if not db.project_exist(project_id):
         return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
     #check if user is already a member of the project
-    if db.user_already_in_project(userID, project):
+    if db.user_already_in_project(userID, project_id):
         return jsonify({"message": "Already a member of the project", "status": "fail"}), 400
-    db.user_add_project(project, userID)
-    db.project_add_member(project, userID)
+    db.user_add_project(project_id, userID)
+    db.project_add_member(project_id, userID)
     return jsonify({"message": "Project joined", "status": "success"}), 200
 
 @app.route('/leave-project', methods=['POST'])
@@ -182,7 +207,7 @@ def leave_project():
 
     Parameters:
     - username (str): The username of the user leaving the project.
-    - project (str): The name of the project to leave.
+    - projectid (int) : The id of the project
 
     Returns:
     - JSON response with a message and status code:
@@ -192,36 +217,18 @@ def leave_project():
     """
     data = request.json
     userID = data.get('username')
-    project = data.get('project')
+    project_id = data.get('projectid')
     if db.user_exist(userID) == False:
         return jsonify({"message": "User not found", "status": "fail"}), 404
     #check if project exists
-    if not db.project_exist(project):
+    if not db.project_exist(project_id):
         return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
-    if not db.user_already_in_project(userID, project):
+    if not db.user_already_in_project(userID, project_id):
         return jsonify({"message": "Not a member of the project", "status": "fail"}), 400
-    db.user_remove_project(project, userID)
-    db.project_remove_member(project, userID)
+    db.user_remove_project(project_id, userID)
+    db.project_remove_member(project_id, userID)
     return jsonify({"message": "Project left", "status": "success"}), 200
 
-@app.route('/new-project', methods=['POST'])
-def new_project():
-    """
-    Endpoint creating a new project
-
-    Parameters:
-    - projectdata (dict) : The data of the new project
-    Returns:
-    - JSON response with a message and status code:
-        - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
-        - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
-    """
-    data = request.json
-    project = data.get('projectdata')
-    id = db.project_new(project["hardwareSets"],project["users"])
-    if project["hardwareSets"] == None or project["users"] == None:
-        return jsonify({"message": "Missing Data!", "status": "fail"}), 400
-    return jsonify({"message": "Project Created","id": id, "status": "success"}), 200
 
 @app.route('/modify-project', methods=['POST'])
 def modify_project():
@@ -229,17 +236,21 @@ def modify_project():
     Endpoint for modifying a project
 
     Parameters:
-    - projectdata (dict) : The data of the new project
+    - projectid (int) : The id of the project
+    - description (str) : The description of the project
+    - projectName (str) : The name of the project
+    - hardwareSets (list) : The list of hardware sets in the project
+    - users (list) : The list of users in the project
+
     Returns:
     - JSON response with a message and status code:
         - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404
         - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
     """
     data = request.json
-    project = data.get('projectdata')
-    projectID =  data.get('project')
-    db.project_modify(projectID,project["hardwareSets"],project["users"])
-    if not db.project_exist(project):
+    project_id =  data.get('projectid')
+    db.project_modify(project_id, data.get('hardwareSets'), data.get('users'), data.get('description'), data.get('projectName'))
+    if not db.project_exist(project_id):
         return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
     return jsonify({"message": "Project Modified", "status": "success"}), 200
 

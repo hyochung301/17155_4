@@ -22,7 +22,7 @@ function LogInPage() {
         setUsername(value);
     };
 
-    // Function to handle password input change
+    // Function to handle password input changes
     const handlePasswordChange = (value) => {
         setPassword(value);
     };

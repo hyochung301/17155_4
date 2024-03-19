@@ -84,11 +84,13 @@ def project_exist(projectID):
         return False
     return True
 
-def project_new(hardwareSets,users): #project ID's should be created automatically
+def project_new(projectName,description,projectID):
     newProject = {
-            #"projectID" :projectID,
-            "hardwareSets" : hardwareSets,
-            "users" : users
+            "projectName" : projectName,
+            "description" : description,
+            "projectID" :projectID,
+            "hardwareSets" : [],
+            "users" : []
         }
     result = projectDB.insert_one(newProject)
     return result.inserted_id
@@ -102,12 +104,14 @@ def project_delete(projectID):
 
 
 
-def project_modify(projectID,hardwareSets,users):
+def project_modify(projectID,hardwareSets,users,description,projectName):
     if project_exist(projectID):
         project = get_project(projectID)
         if hardwareSets != None:
             project["hardwareSets"] = hardwareSets
             project["users"] = users
+            project["description"] = description
+            project["projectName"] = projectName
         myquery={"projectID":projectID}
         projectDB.update_one(myquery,project)
     else:
