@@ -21,15 +21,17 @@ def user_exist(userID):
     return True
 
 
-def user_new(userID,encrypted_password):
+def user_new(userID, encrypted_password):
     if not user_exist(userID):
         newUser = {
             "userID" :userID,
-            "userPW" : encrypted_password
+            "userPW" : encrypted_password,
+            "projects" : []
         }
         userDB.insert_one(newUser)
     else:
         return "user exists" # will probably need to change this to an actual error code system
+    
 
 def user_delete(userID):
     if user_exist(userID):
