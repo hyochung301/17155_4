@@ -24,7 +24,7 @@ function handleCheckOutHWSet1() {
       <thead>
         <tr>
           <th style={{ padding: '20px' }}>Project Name</th>
-          <th style={{ padding: '20px' }}>Project ID</th>
+          {/* <th style={{ padding: '20px' }}>Project ID</th> */}
           <th style={{ padding: '20px' }}>HWSet1</th>
           <th style={{ padding: '20px' }}>HWSet2</th>
           <th style={{ padding: '20px' }}>Quantity</th>
@@ -35,7 +35,7 @@ function handleCheckOutHWSet1() {
         <tr>
           
           <td style={{ padding: '20px' }}>{props.name}</td>
-          <td style={{ padding: '20px' }}>{props.id}</td>
+          {/* <td style={{ padding: '20px' }}>{props.id}</td> */}
           <td style={{ padding: '20px' }}> {props.checkedout1}/{props.capacity1}</td> {/* Replace with actual capacity */}
           <td style={{ padding: '20px' }}>{props.checkedout2}/{props.capacity2}</td> {/* Replace with actual capacity */}
           <td>
