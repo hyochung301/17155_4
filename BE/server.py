@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import cross_origin, CORS
 # # from encryption import decrypt
 import BE.db as db
-
+#import db as db
 app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
 #app = Flask(__name__, static_folder="../build", static_url_path="/")
 CORS(app)
@@ -35,7 +35,8 @@ def not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))    
+    #app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))    
+    app.run(debug=True)
 
 # ********************************** User Management Endpoints **********************************
 
