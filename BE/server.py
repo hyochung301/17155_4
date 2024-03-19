@@ -37,6 +37,7 @@ def not_found(e):
 if __name__ == '__main__':
     #app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))    
     app.run(debug=True)
+    #"proxy": "http://localhost:5000",
 
 # ********************************** User Management Endpoints **********************************
 
