@@ -37,7 +37,10 @@ function App() {
         <Routes>
           <Route path="/" element={<LogInPage/>}></Route>
           {/* <Route path="/about" element={ <About/>}></Route> */}
-          <Route path="/projectManagement/:username" element={<ProjecManagement />} />
+          <Route path="/projectManagement/:username" element={<ProjecManagement />} 
+          />
+            <Route path="/checkout" element={<ProjecManagement />} 
+          />
 
 
         </Routes>
