@@ -1,17 +1,41 @@
 import os
 from flask import Flask, jsonify, request, send_from_directory
-from flask_cors import CORS
-# from encryption import decrypt
-import db
+from flask_cors import cross_origin, CORS
+# # from encryption import decrypt
+import BE.db as db
+
 app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
-
+#app = Flask(__name__, static_folder="../build", static_url_path="/")
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+@cross_origin()
 
 
-@app.route("/", methods=["GET"])
+@app.route('/getLastName/<firstName>')
+def hello_world(firstName):
+    if firstName == "Abhay":
+        successM = {"name": "Samant", "code": 200}
+        return jsonify(successM), 200
+    else:
+        errorM = {"error": "User Not Found", "code": 404}
+        return jsonify(errorM), 404
+
+
+# @app.route("/", methods=["GET"])
+# def index():
+#     return send_from_directory(app.static_folder, "index.html")
+@app.route('/', methods=["GET"])
 def index():
-    return send_from_directory(app.static_folder, "index.html")
-    
+    return app.send_static_file('index.html')
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))    
 
 # ********************************** User Management Endpoints **********************************
 
@@ -22,7 +46,7 @@ def login():
         Endpoint for user login.
 
         Parameters:
-        - userID (str): The username of the user.
+        - username (str): The username of the user.
         - password (str): The password of the user.
 
         Returns:
@@ -49,7 +73,7 @@ def register():
     Endpoint for user registration.
 
     Parameters:
-    - userID (str): The username of the user.
+    - username (str): The username of the user.
     - password (str): The password of the user.
 
     Returns:
@@ -58,7 +82,7 @@ def register():
         -  user already exists: status code 400, {"message": "User already exists", "status": "fail"}
     """
     data = request.json
-    userID = data.get('userID')
+    userID = data.get('username')
     password = data.get('password')
     
     # Assuming you want to decrypt data received
@@ -77,7 +101,7 @@ def delete_user():
     Endpoint for deleting a user.
 
     Parameters:
-    - userID (str): The username of the user.
+    - username (str): The username of the user.
 
     Returns:
     - JSON response: A JSON response indicating the status of the deletion attempt.
@@ -85,7 +109,7 @@ def delete_user():
         -  user not found: status code 404, {"message": "User not found", "status": "fail"}
     """
     data = request.json
-    userID = data.get('userID')
+    userID = data.get('username')
     if db.user_exist(userID):
         db.user_delete(userID)
         return jsonify({"message": "User deleted", "status": "success"}), 200
@@ -123,7 +147,7 @@ def join_project():
     Endpoint for joining a project.
 
     Parameters:
-    - userID (str): The username of the user joining the project.
+    - username (str): The username of the user joining the project.
     - project (str): The name of the project to join.
 
     Returns:
@@ -134,7 +158,7 @@ def join_project():
         - If the user successfully joins the project, returns {"message": "Project joined", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = data.get('userID')
+    userID = data.get('username')
     project = data.get('project')
     #check if user exists
     if db.user_exist(userID) == False:
@@ -155,7 +179,7 @@ def leave_project():
     Endpoint for leaving a project.
 
     Parameters:
-    - userID (str): The username of the user leaving the project.
+    - username (str): The username of the user leaving the project.
     - project (str): The name of the project to leave.
 
     Returns:
@@ -165,7 +189,7 @@ def leave_project():
         - If the user successfully leaves the project, returns {"message": "Project left", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = data.get('userID')
+    userID = data.get('username')
     project = data.get('project')
     if db.user_exist(userID) == False:
         return jsonify({"message": "User not found", "status": "fail"}), 404
@@ -295,8 +319,3 @@ def checkin_hardware():
     #     return jsonify({'message': 'Exceeds availability'}), 400
     db.hwSet_checkin(hw_set_id, qty)
     return jsonify({'message': 'Checked in successfully', 'availability': availability + qty}), 200
-
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
