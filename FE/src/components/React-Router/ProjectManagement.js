@@ -27,12 +27,15 @@ const ProjectManagement = () => {
     const handleSubmit = async (e) => {
         console.log("Project Name:", ProjectName);
         console.log("Description:", Description);
-        // console.log("Project ID:", NewProjectID);
+        console.log("Project ID:", NewProjectID);
     };
+
+
+
     async function handleCheckInHWSet1(i, quantity) {
         console.log("CheckIn",quantity, "Hardware Set 1 for project", i);
         // Make a POST request to /NewUser with the username and password
-    let name = projects[i].name;
+    let id = projects[i].id;
     console.log("Project ID:", id);
 const response = await fetch("projects/checkin", {
     method: "POST",
@@ -43,9 +46,35 @@ const response = await fetch("projects/checkin", {
 // Parse the response as JSON
 const data = await response.json();
 console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Checked in successfully") {
+    console.log("Checked in successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
   }
 
-    async function handleCheckInHWSet2(i, quantity) {
+
+
+
+
+async function handleCheckInHWSet2(i, quantity) {
         console.log("CheckIn",quantity, "Hardware Set 2 for project", i);
         // Make a POST request to /NewUser with the username and password
     let id = projects[i].id;
@@ -59,10 +88,38 @@ const response = await fetch("projects/checkin", {
 // Parse the response as JSON
 const data = await response.json();
 console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Checked in successfully") {
+    console.log("Checked in successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
+
   }
 
 
-    async function handleCheckOutHWSet1(i, quantity) {
+
+
+
+
+
+async function handleCheckOutHWSet1(i, quantity) {
         console.log("Checkout",quantity, "Hardware Set 1 for project", i);
             // Make a POST request to /NewUser with the username and password
         let id = projects[i].id;
@@ -77,9 +134,35 @@ console.log(data);
     const data = await response.json();
     console.log(data);
       }
+      if (data.message === "Invalid quantity" ) {
+        console.log("Invalid quantity");
+        alert("Invalid quantity");
+    }
+    else if (data.message === "Exceeds capacity") {
+        console.log("Exceeds capacity");
+        alert("Exceeds capacity");
+    
+    
+    }
+    else if (data.message === "Checked out successfully") {
+        console.log("Checked out successfully");
+        alert("Checked in successfully");
+    
+    }
+    else if (data.message === "Invalid Project ID") {
+        console.log("Invalid Project ID");
+        alert("Invalid Project ID");
+    
+    }
+    fetchProjects();
+    renderProjects();
 
 
-      async function handleCheckOutHWSet2(i, quantity) {
+
+
+
+
+async function handleCheckOutHWSet2(i, quantity) {
         console.log("Checkout",quantity, "Hardware Set 2 for project", i);
         // Make a POST request to /NewUser with the username and password
     let id = projects[i].id;
@@ -93,7 +176,33 @@ const response = await fetch("projects/checkout", {
 // Parse the response as JSON
 const data = await response.json();
 console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Checked out successfully") {
+    console.log("Checked in successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
   }
+
+
+
+
 
 
     const handleExistingSubmit = async (e) => {
