@@ -18,7 +18,7 @@ function Form(props) {
                 <label>
                     {props.text}
                     <input
-                        type={props.text === 'Password:' ? 'password' : 'text'} 
+                        type={props.text === 'Password:     ' ? 'password' : 'text'} 
                         value={props.value} // Set the value of the input field
                         onChange={handleChange} // Call handleChange function on change
                     />
