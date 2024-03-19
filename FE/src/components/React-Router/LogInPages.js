@@ -126,6 +126,15 @@ const handleNewUserSubmit = async (e) => {
 
     return (
         <>
+        <div style={{background: 'linear-gradient(to top, #ffffff, #bf5700)'}}>
+
+        
+        <center>
+            <h1>Welcome to our Project Management System!</h1>
+        </center>
+        
+        <br />
+
         <center>
             <h1>Returning User? Please Log In</h1>
         </center>
@@ -168,7 +177,7 @@ const handleNewUserSubmit = async (e) => {
                 onChange={handleNewPasswordChange} // Pass the change handler function
             />
                         <Form
-                text='password:'
+                text='Confirm password:'
                 label='Confirm Your Password'
                 onChange={handleConfirmPasswordChange} // Pass the change handler function
             />
@@ -181,6 +190,12 @@ const handleNewUserSubmit = async (e) => {
                 {/* </Link> */}
             </center>
 
+
+        </div>
+        <div>
+            <img src="UT logo.png"/>
+        </div>
+        
 
         </div>
         </>
