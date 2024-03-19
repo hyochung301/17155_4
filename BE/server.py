@@ -1,61 +1,20 @@
+import os
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
-from encryption import decrypt
+# from encryption import decrypt
+import db
 app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
 
 CORS(app)
-
-users = {"user1": {"password": "password1", "projects": []}}
-checkout_elements = {"item1": {"available": 5, "capacity": 10}}
 
 
 @app.route("/", methods=["GET"])
 def index():
     return send_from_directory(app.static_folder, "index.html")
+    
 
+# ********************************** User Management Endpoints **********************************
 
-@app.route('/checkout-elements', methods=['GET'])
-def get_checkout_elements():
-    """
-    Retrieves the checkout elements.
-
-    Returns:
-        A JSON response containing the checkout elements and a status code of 200.
-    """
-    return jsonify({"elements": checkout_elements}), 200
-
-@app.route('/join-project', methods=['POST'])
-def join_project():
-    """
-    Endpoint for joining a project.
-
-    Parameters:
-    - username (str): The username of the user joining the project.
-    - project (str): The name of the project to join.
-
-    Returns:
-    - JSON response with a message and status code:
-        - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
-        - If the user is already a member of the project, returns {"message": "Already a member of the project", "status": "fail"} with status code 400.
-        - If the user successfully joins the project, returns {"message": "Project joined", "status": "success"} with status code 200.
-    """
-    data = request.json
-    username = data.get('username')
-    project = data.get('project')
-    if username not in users:
-        return jsonify({"message": "User not found", "status": "fail"}), 404
-    if project not in users[username]['projects']:
-        users[username]['projects'].append(project)
-        return jsonify({"message": "Project joined", "status": "success"}), 200
-    return jsonify({"message": "Already a member of the project", "status": "fail"}), 400
-
-users = {
-        "asamant": "Temp123",
-        "aissa": "TheKing%^&",
-        "bjha": "$72messenger",
-        "skharel": "Life15$",
-        "Ally!": "God$12"
-}
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -63,7 +22,7 @@ def login():
         Endpoint for user login.
 
         Parameters:
-        - username (str): The username of the user.
+        - userID (str): The username of the user.
         - password (str): The password of the user.
 
         Returns:
@@ -72,16 +31,192 @@ def login():
             -  invalid credentials: status code 401, {"message": "Invalid credentials", "status": "fail"}
         """
         data = request.json
-        username = data.get('username')
+        userID = data.get('username')
         password = data.get('password')
         
         # Assuming you want to decrypt data received
-        decrypted_username = username
+        decrypted_username = userID
         decrypted_password = password
         
-        if decrypted_username in users and users[decrypted_username] == decrypted_password:
+        if db.user_check_password(decrypted_username, decrypted_password):
                 return jsonify({"message": "Login successful", "status": "success"}), 200
         return jsonify({"message": "Invalid credentials", "status": "fail"}), 401
+
+# user registration endpoint
+@app.route('/register', methods=['POST'])
+def register():
+    """
+    Endpoint for user registration.
+
+    Parameters:
+    - userID (str): The username of the user.
+    - password (str): The password of the user.
+
+    Returns:
+    - JSON response: A JSON response indicating the status of the registration attempt.
+        -  registration successful: status code 200, {"message": "Registration successful", "status": "success"}
+        -  user already exists: status code 400, {"message": "User already exists", "status": "fail"}
+    """
+    data = request.json
+    userID = data.get('userID')
+    password = data.get('password')
+    
+    # Assuming you want to decrypt data received
+    decrypted_username = userID
+    decrypted_password = password
+    
+    if db.user_exist(decrypted_username):
+        return jsonify({"message": "User already exists", "status": "fail"}), 400
+    db.user_new(decrypted_username, decrypted_password)
+    return jsonify({"message": "Registration successful", "status": "success"}), 200
+
+# user deletion endpoint
+@app.route('/delete-user', methods=['POST'])
+def delete_user():
+    """
+    Endpoint for deleting a user.
+
+    Parameters:
+    - userID (str): The username of the user.
+
+    Returns:
+    - JSON response: A JSON response indicating the status of the deletion attempt.
+        -  user deleted: status code 200, {"message": "User deleted", "status": "success"}
+        -  user not found: status code 404, {"message": "User not found", "status": "fail"}
+    """
+    data = request.json
+    userID = data.get('userID')
+    if db.user_exist(userID):
+        db.user_delete(userID)
+        return jsonify({"message": "User deleted", "status": "success"}), 200
+    return jsonify({"message": "User not found", "status": "fail"}), 404
+
+
+
+# ********************************** Project Management Endpoints **********************************
+
+@app.route('/projects', methods=['GET'])
+def get_projects():
+    """
+    Retrieves a list of projects with their availability and capacity.
+
+    Returns:
+        A JSON response containing a list of projects with their respective ID, availability, and capacity.
+    """
+    project_list = []
+    for project in db.get_all_projects():
+        for hwSetID in project['hardwareSets']:
+            hwSet = db.hwSet_get(hwSetID)
+            project_list.append({
+                'id': project['projectID'],
+                'available': hwSet['available'],
+                'capacity': hwSet['capacity']
+            })
+    return jsonify(project_list)
+
+
+users = {"user1": {"password": "password1", "projects": []}}
+
+@app.route('/join-project', methods=['POST'])
+def join_project():
+    """
+    Endpoint for joining a project.
+
+    Parameters:
+    - userID (str): The username of the user joining the project.
+    - project (str): The name of the project to join.
+
+    Returns:
+    - JSON response with a message and status code:
+        - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
+        - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404.
+        - If the user is already a member of the project, returns {"message": "Already a member of the project", "status": "fail"} with status code 400.
+        - If the user successfully joins the project, returns {"message": "Project joined", "status": "success"} with status code 200.
+    """
+    data = request.json
+    userID = data.get('userID')
+    project = data.get('project')
+    #check if user exists
+    if db.user_exist(userID) == False:
+        return jsonify({"message": "User not found", "status": "fail"}), 404
+    #check if project exists
+    if not db.project_exist(project):
+        return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
+    #check if user is already a member of the project
+    if db.user_already_in_project(userID, project):
+        return jsonify({"message": "Already a member of the project", "status": "fail"}), 400
+    db.user_add_project(project, userID)
+    db.project_add_member(project, userID)
+    return jsonify({"message": "Project joined", "status": "success"}), 200
+
+@app.route('/leave-project', methods=['POST'])
+def leave_project():
+    """
+    Endpoint for leaving a project.
+
+    Parameters:
+    - userID (str): The username of the user leaving the project.
+    - project (str): The name of the project to leave.
+
+    Returns:
+    - JSON response with a message and status code:
+        - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
+        - If the user is not a member of the project, returns {"message": "Not a member of the project", "status": "fail"} with status code 400.
+        - If the user successfully leaves the project, returns {"message": "Project left", "status": "success"} with status code 200.
+    """
+    data = request.json
+    userID = data.get('userID')
+    project = data.get('project')
+    if db.user_exist(userID) == False:
+        return jsonify({"message": "User not found", "status": "fail"}), 404
+    #check if project exists
+    if not db.project_exist(project):
+        return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
+    if not db.user_already_in_project(userID, project):
+        return jsonify({"message": "Not a member of the project", "status": "fail"}), 400
+    db.user_remove_project(project, userID)
+    db.project_remove_member(project, userID)
+    return jsonify({"message": "Project left", "status": "success"}), 200
+
+@app.route('/new-project', methods=['POST'])
+def new_project():
+    """
+    Endpoint creating a new project
+
+    Parameters:
+    - projectdata (dict) : The data of the new project
+    Returns:
+    - JSON response with a message and status code:
+        - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
+        - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
+    """
+    data = request.json
+    project = data.get('projectdata')
+    id = db.project_new(project["hardwareSets"],project["users"])
+    if project["hardwareSets"] == None or project["users"] == None:
+        return jsonify({"message": "Missing Data!", "status": "fail"}), 400
+    return jsonify({"message": "Project Created","id": id, "status": "success"}), 200
+
+@app.route('/modify-project', methods=['POST'])
+def modify_project():
+    """
+    Endpoint for modifying a project
+
+    Parameters:
+    - projectdata (dict) : The data of the new project
+    Returns:
+    - JSON response with a message and status code:
+        - If the project is not found, returns {"message": "Project does not exist", "status": "fail"} with status code 404
+        - If the user successfully creates the project, returns {"message": "Project Created", "status": "success"} with status code 200.
+    """
+    data = request.json
+    project = data.get('projectdata')
+    projectID =  data.get('project')
+    db.project_modify(projectID,project["hardwareSets"],project["users"])
+    if not db.project_exist(project):
+        return jsonify({'message': 'Project does not exist', "status": "fail"}), 404
+    return jsonify({"message": "Project Modified", "status": "success"}), 200
+
 
 
 # dummy data for hardware sets
@@ -96,86 +231,72 @@ project_hardware_sets = {
     }
 }
 
-@app.route('/projects/<int:project_id>/checkout', methods=['POST'])
-def checkout_hardware(project_id):
+# ********************************** Hardware Management Endpoints **********************************
+
+@app.route('/projects/checkout', methods=['POST'])
+def checkout_hardware():
     '''
     Checkout hardware for a specific project.
 
     Args:
         project_id (int): The ID of the project.
+        hw_set_id (int): The ID of the hardware set to check out.
+        qty (int): The quantity of hardware to check out.
 
     Returns:
-        A JSON response containing the result of the checkout operation.
+        JSON response containing the result of the checkout operation.
+        Success: status code 200, {"message": "Checked out successfully", "availability": <new availability>}
+        Exceeds availability: status code 400, {"message": "Exceeds availability"}
     '''
+    data = request.json
+    projject_id = data.get('project_id')
+    hw_set_id = data.get('hw_set_id')
+    qty = data.get('qty')
+    hardware_set = db.hwSet_get(hw_set_id)
+    availability = hardware_set['available']
+    if qty <= 0:
+        return jsonify({'message': 'Invalid quantity'}), 400
+    if availability < qty:
+        return jsonify({'message': 'Exceeds availability'}), 400
+    db.hwSet_checkout(hw_set_id, qty)
+    return jsonify({'message': 'Checked out successfully', 'availability': availability - qty}), 200
+    
 
-    qty = request.json.get('qty', 1)  # Default to 1 if not specified
-    hardware_set = project_hardware_sets.get(project_id)
 
-    if hardware_set:
-        result = hardware_set.check_out(qty)
-        if result == 0:
-            return jsonify({
-                'message': 'Checked out successfully',
-                'availability': hardware_set.get_availability()
-            }), 200
-        else:
-            return jsonify({'message': 'Not enough availability'}), 400
-    else:
-        return jsonify({'message': 'Project not found'}), 404
+@app.route('/projects/checkin', methods=['POST'])
+def checkin_hardware():
 
-@app.route('/projects/<int:project_id>/checkin', methods=['POST'])
-def checkin_hardware(project_id):
-    """
-    Check in hardware for a specific project.
+    '''
+    Checkin hardware for a specific hw set.
 
     Args:
         project_id (int): The ID of the project.
+        hw_set_id (int): The ID of the hardware set to check out.
+        qty (int): The quantity of hardware to check out.
 
     Returns:
-        A JSON response containing the result of the check-in operation.
-        If the check-in is successful, the response will include a success message
-        and the updated availability of the hardware set.
-        If the check-in exceeds the capacity of the hardware set, the response will
-        include an error message.
-        If the project is not found, the response will include a message indicating
-        that the project was not found.
-    """
-    # ... similar logic as checkout_hardware
-    qty = request.json.get('qty', 1)
-    hardware_set = project_hardware_sets.get(project_id)
-
-    if hardware_set:
-        result = hardware_set.check_in(qty)
-        if result == 0:
-            return jsonify({
-                'message': 'Checked in successfully',
-                'availability': hardware_set.get_availability()
-            }), 200
-        else:
-            return jsonify({'message': 'Exceeds capacity'}), 400
-    else:
-        return jsonify({'message': 'Project not found'}), 404
-
-@app.route('/projects', methods=['GET'])
-def get_projects():
-    """
-    Retrieves a list of projects with their availability and capacity.
-
-    Returns:
-        A JSON response containing a list of projects with their respective ID, availability, and capacity.
-    """
-    project_list = []
-    for project_id, hardware_set in project_hardware_sets.items():
-        project_list.append({
-            'id': project_id,
-            'available': hardware_set.get_availability(),
-            'capacity': hardware_set.get_capacity()
-        })
-    return jsonify(project_list)
+        JSON response containing the result of the checkin operation.
+        Success: status code 200, {"message": "Checked in successfully", "availability": <new availability>}
+        Exceeds capacity: status code 400, {"message": "Exceeds capacity"}
+    '''
+    data = request.json
+    projject_id = data.get('project_id')
+    hw_set_id = data.get('hw_set_id')
+    qty = data.get('qty')
+    hardware_set = db.hwSet_get(hw_set_id)
+    availability = hardware_set['available']
+    capacity = hardware_set['capacity']
+    if qty <= 0:
+        return jsonify({'message': 'Invalid quantity'}), 400
+    if capacity < qty + availability:
+        return jsonify({'message': 'Exceeds capacity'}), 400
+    # returning more than what was checked out
+    # if qty > availability:
+    #     return jsonify({'message': 'Exceeds availability'}), 400
+    db.hwSet_checkin(hw_set_id, qty)
+    return jsonify({'message': 'Checked in successfully', 'availability': availability + qty}), 200
 
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
