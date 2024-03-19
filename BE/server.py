@@ -305,7 +305,7 @@ def checkin_hardware():
         Exceeds capacity: status code 400, {"message": "Exceeds capacity"}
     '''
     data = request.json
-    projject_id = data.get('project_id')
+    project_id = data.get('project_id')
     hw_set_id = data.get('hw_set_id')
     qty = data.get('qty')
     hardware_set = db.hwSet_get(hw_set_id)
