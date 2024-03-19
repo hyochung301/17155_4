@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import cross_origin, CORS
-from encryption import encrypt
+from BE.encryption import encrypt
 import BE.db as db
 #import db as db
 app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
