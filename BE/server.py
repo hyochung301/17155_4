@@ -30,14 +30,14 @@ def login():
             -  invalid credentials: status code 401, {"message": "Invalid credentials", "status": "fail"}
         """
         data = request.json
-        userID = data.get('userID')
+        userID = data.get('username')
         password = data.get('password')
         
         # Assuming you want to decrypt data received
         decrypted_username = userID
         decrypted_password = password
         
-        if db.user_exist(decrypted_username) and users[decrypted_username] == decrypted_password:
+        if db.user_check_password(decrypted_username, decrypted_password):
                 return jsonify({"message": "Login successful", "status": "success"}), 200
         return jsonify({"message": "Invalid credentials", "status": "fail"}), 401
 

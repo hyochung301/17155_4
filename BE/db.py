@@ -35,6 +35,16 @@ def user_delete(userID):
         userDB.remove_one(user)
     else:
         return "cant find user"
+    
+def user_check_password(userID,encrypted_password):
+    if not user_exist(userID):
+        return False
+    myquery={"userID":userID}
+    user = userDB.find_one(myquery)
+    if user["userPW"] == encrypted_password:
+        return True
+    else:
+        return False
 
 # check if user is already in project
 # true if user is already in project
