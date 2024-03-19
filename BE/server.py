@@ -1,7 +1,7 @@
 import os
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import cross_origin, CORS
-# # from encryption import decrypt
+from encryption import encrypt
 import BE.db as db
 #import db as db
 app = Flask(__name__, static_folder="../FE/build", static_url_path="/")
@@ -57,8 +57,8 @@ def login():
             -  invalid credentials: status code 401, {"message": "Invalid credentials", "status": "fail"}
         """
         data = request.json
-        userID = data.get('username')
-        password = data.get('password')
+        userID = encrypt(data.get('username'))
+        password = encrypt(data.get('password'))
         
         # Assuming you want to decrypt data received
         decrypted_username = userID
@@ -84,8 +84,8 @@ def register():
         -  user already exists: status code 400, {"message": "User already exists", "status": "fail"}
     """
     data = request.json
-    userID = data.get('username')
-    password = data.get('password')
+    userID = encrypt(data.get('username'))
+    password = encrypt(data.get('password'))
     
     # Assuming you want to decrypt data received
     decrypted_username = userID
@@ -111,7 +111,7 @@ def delete_user():
         -  user not found: status code 404, {"message": "User not found", "status": "fail"}
     """
     data = request.json
-    userID = data.get('username')
+    userID = encrypt(data.get('username'))
     if db.user_exist(userID):
         db.user_delete(userID)
         return jsonify({"message": "User deleted", "status": "success"}), 200

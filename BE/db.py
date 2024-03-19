@@ -10,7 +10,7 @@ client = MongoClient(uri)
 # Select your database
 db = client["projectDB"]
 
-
+# ********** User Functions **********
 userDB = db["users"]
 
 def user_exist(userID):
@@ -69,6 +69,8 @@ def user_remove_project(userID, projectID):
     newvalues = {"$pull": {"projects": projectID}}
     userDB.update_one(myquery, newvalues)
 
+
+# ********** Project Functions **********
 projectDB = db["projects"]
 
 def get_all_projects():
@@ -89,7 +91,7 @@ def project_new(projectName,description,projectID):
             "projectName" : projectName,
             "description" : description,
             "projectID" :projectID,
-            "hardwareSets" : [],
+            "hardwareSets" : [1, 2],
             "users" : []
         }
     result = projectDB.insert_one(newProject)
@@ -127,6 +129,8 @@ def project_remove_member(projectID, username):
     myquery = {"projectID": projectID}
     newvalues = {"$pull": {"users": username}}
     projectDB.update_one(myquery, newvalues)
+
+# ********** Hardware Set Functions **********
 
 hwSetDB = db["hardware_sets"]
 

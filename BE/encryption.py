@@ -1,6 +1,6 @@
 # import cipher
 
-def encrypt(inputText, N, D):
+def encrypt(inputText, N = 3, D = 1):
     if N < 1 or (D != 1 and D != -1):
         return "Invalid N or D"
     
