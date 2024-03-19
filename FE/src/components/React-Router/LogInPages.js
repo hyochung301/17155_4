@@ -126,25 +126,34 @@ const handleNewUserSubmit = async (e) => {
 
     return (
         <>
+        <div style={{background: 'linear-gradient(to top, #ffffff, #bf5700)'}}>
+
+        
         <center>
-            <h1>Returning User? Please Log In</h1>
+            <h1><b>Welcome to our Project Management System!</b></h1>
+        </center>
+        
+        <br />
+
+        <center>
+            <h1 style={{fontWeight: 'bold', fontSize: '1.5em'}}>Returning User? Please Log In</h1>
         </center>
         <div className='LogIn'>
             <Form
-                text='Username:'
+                text='   Username: '
                 label='Enter Your Username'
                 onChange={handleUsernameChange} // Pass the change handler function
             />
             <br />
             <Form
-                text='Password:'
+                text='Password:     '
                 label='Enter Your Password'
                 onChange={handlePasswordChange} // Pass the change handler function
             />
             <br />
             <center>
                 {/* <Link to={"/LogInAttempt/"+username+"/"+password}> */}
-                <button onClick={handleSubmit}>Submit</button>
+                <button onClick={handleSubmit} style={{fontWeight: 'bold', fontSize: '1.2em'}}>Submit</button>
                 {!(isCorrect) && <><br></br> <center><p>Incorrect User Name or Password, Pls Try Again</p></center> </>} 
             
                 {/* </Link> */}
@@ -153,34 +162,41 @@ const handleNewUserSubmit = async (e) => {
         <br />
         <br />
         <center>
-            <h1>New User? Please Create a profile</h1>
+            <h1 style={{fontWeight: 'bold', fontSize: '1.5em'}}>New User? Please Create a profile</h1>
         </center>
         <div className='NewUser'>
         <Form
-                text='Username:'
+                text='Username: '
                 label='Enter Your Username'
                 onChange={handleNewUsernameChange} // Pass the change handler function
             />
             <br />
             <Form
-                text='password:'
+                text='Password: '
                 label='Enter Your Password'
                 onChange={handleNewPasswordChange} // Pass the change handler function
             />
+            <br />
                         <Form
-                text='password:'
+                text='Confirm Password:'
                 label='Confirm Your Password'
                 onChange={handleConfirmPasswordChange} // Pass the change handler function
             />
             <br />
             <center>
                 {/* <Link to={"/LogInAttempt/"+username+"/"+password}> */}
-                <button onClick={handleNewUserSubmit}>Submit</button>
+                <button onClick={handleNewUserSubmit} style={{fontWeight: 'bold', fontSize: '1.2em'}}>Submit</button>
                 {!(passwordsMatch) && <><br></br> <center><p>Passwords Do Not Match, Pls Try Again</p></center> </>} 
                 {!(UserAlreadyExists) && <><br></br> <center><p>User Already Exists, Pls Try Again</p></center> </>}
                 {/* </Link> */}
             </center>
 
+
+        </div>
+        <div>
+            <img src="UT logo.png"/>
+        </div>
+        
 
         </div>
         </>
