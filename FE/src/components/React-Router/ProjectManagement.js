@@ -249,6 +249,7 @@ renderProjects();
     };
 
     const fetchProjects = async () => {
+        console.log("The view your projects button has been clicked")
         // Fetch projects data from the server
         const response = await fetch("/projects");
         const data = await response.json();
