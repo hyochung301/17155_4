@@ -84,14 +84,13 @@ def project_exist(projectID):
         return False
     return True
 
-def project_new(hardwareSets,users,description,projectName,projectID):
+def project_new(projectName,description,projectID):
     newProject = {
-            "projectID" :projectID,
-            "hardwareSets" : hardwareSets,
-            "users" : users,
+            "projectName" : projectName,
             "description" : description,
-            "projectName" : projectName
-
+            "projectID" :projectID,
+            "hardwareSets" : [],
+            "users" : []
         }
     result = projectDB.insert_one(newProject)
     return result.inserted_id
