@@ -1,0 +1,1 @@
+web: gunicorn BE/server:app

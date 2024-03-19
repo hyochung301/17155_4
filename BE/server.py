@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 # from encryption import decrypt
@@ -298,6 +299,6 @@ def checkin_hardware():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
 
 
