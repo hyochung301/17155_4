@@ -172,13 +172,13 @@ const handleNewUserSubmit = async (e) => {
             />
             <br />
             <Form
-                text='Password: '
+                text='Password:     '
                 label='Enter Your Password'
                 onChange={handleNewPasswordChange} // Pass the change handler function
             />
             <br />
                         <Form
-                text='Confirm Password:'
+                text='Password:     '
                 label='Confirm Your Password'
                 onChange={handleConfirmPasswordChange} // Pass the change handler function
             />
