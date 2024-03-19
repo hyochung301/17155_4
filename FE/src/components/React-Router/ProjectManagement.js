@@ -133,7 +133,7 @@ async function handleCheckOutHWSet1(i, quantity) {
     // Parse the response as JSON
     const data = await response.json();
     console.log(data);
-      }
+      
       if (data.message === "Invalid quantity" ) {
         console.log("Invalid quantity");
         alert("Invalid quantity");
@@ -156,6 +156,7 @@ async function handleCheckOutHWSet1(i, quantity) {
     }
     fetchProjects();
     renderProjects();
+}
 
 
 
