@@ -156,13 +156,19 @@ def get_projects():
     """
     project_list = []
     for project in db.get_all_projects():
+        hw_sets = []
         for hwSetID in project['hardwareSets']:
             hwSet = db.hwSet_get(hwSetID)
-            project_list.append({
-                'id': project['projectID'],
+            hw_sets.append({
+                'id': hwSetID,
                 'available': hwSet['available'],
-                'capacity': hwSet['capacity']
+                'capacity': hwSet['capacity'],
             })
+        project_list.append({
+            'id': project['projectID'],
+            'hardwareSets': hw_sets,
+            'users': project['users'],
+        })
     return jsonify(project_list)
 
 
