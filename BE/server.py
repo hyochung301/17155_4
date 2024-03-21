@@ -276,7 +276,7 @@ project_hardware_sets = {
 
 # ********************************** Hardware Management Endpoints **********************************
 
-@app.route('/projects/checkout', methods=['POST'])
+@app.route('/checkout', methods=['POST'])
 def checkout_hardware():
     '''
     Checkout hardware for a specific project.
@@ -306,7 +306,7 @@ def checkout_hardware():
     
 
 
-@app.route('/projects/checkin', methods=['POST'])
+@app.route('/checkin', methods=['POST'])
 def checkin_hardware():
 
     '''
