@@ -48,7 +48,7 @@ def login():
         Endpoint for user login.
 
         Parameters:
-        - username (str): The username of the user.
+        - userid (str): The userid of the user.
         - password (str): The password of the user.
 
         Returns:
@@ -57,7 +57,7 @@ def login():
             -  invalid credentials: status code 401, {"message": "Invalid credentials", "status": "fail"}
         """
         data = request.json
-        userID = encrypt(data.get('username'))
+        userID = encrypt(data.get('userid'))
         password = encrypt(data.get('password'))
         
         # Assuming you want to decrypt data received
@@ -75,6 +75,7 @@ def register():
     Endpoint for user registration.
 
     Parameters:
+    - userid (str): The userid of the user.
     - username (str): The username of the user.
     - password (str): The password of the user.
 
@@ -84,16 +85,17 @@ def register():
         -  user already exists: status code 400, {"message": "User already exists", "status": "fail"}
     """
     data = request.json
-    userID = encrypt(data.get('username'))
+    username = data.get('username')
+    userID = encrypt(data.get('userid'))
     password = encrypt(data.get('password'))
     
     # Assuming you want to decrypt data received
-    decrypted_username = userID
+    decrypted_userID = userID
     decrypted_password = password
     
-    if db.user_exist(decrypted_username):
+    if db.user_exist(decrypted_userID):
         return jsonify({"message": "User already exists", "status": "fail"}), 400
-    db.user_new(decrypted_username, decrypted_password)
+    db.user_new(decrypted_userID, decrypted_password, username)
     return jsonify({"message": "Registration successful", "status": "success"}), 200
 
 # user deletion endpoint
@@ -103,7 +105,7 @@ def delete_user():
     Endpoint for deleting a user.
 
     Parameters:
-    - username (str): The username of the user.
+    - userid (str): The userid of the user.
 
     Returns:
     - JSON response: A JSON response indicating the status of the deletion attempt.
@@ -111,7 +113,7 @@ def delete_user():
         -  user not found: status code 404, {"message": "User not found", "status": "fail"}
     """
     data = request.json
-    userID = encrypt(data.get('username'))
+    userID = encrypt(data.get('userid'))
     if db.user_exist(userID):
         db.user_delete(userID)
         return jsonify({"message": "User deleted", "status": "success"}), 200
@@ -137,13 +139,13 @@ def new_project():
         - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
     """
     data = request.json
-    projectid = data.get('projectid')
+    project_id = data.get('projectid')
     project_description = data.get('projectDescription')
     project_name = data.get('projectName')
     # if project already exists return error
-    if db.project_exist(projectid):
+    if db.project_exist(project_id):
         return jsonify({'message': 'Project already exists', "status": "fail"}), 400
-    id = db.project_new(projectID=projectid, description=project_description, projectName=project_name)
+    id = db.project_new(projectID=project_id, description=project_description, projectName=project_name)
     return jsonify({"message": "Project Created","id": id, "status": "success"}), 200
 
 @app.route('/projects', methods=['GET'])
@@ -156,13 +158,20 @@ def get_projects():
     """
     project_list = []
     for project in db.get_all_projects():
+        hw_sets = []
         for hwSetID in project['hardwareSets']:
             hwSet = db.hwSet_get(hwSetID)
-            project_list.append({
-                'id': project['projectID'],
+            hw_sets.append({
+                'id': hwSetID,
                 'available': hwSet['available'],
-                'capacity': hwSet['capacity']
+                'capacity': hwSet['capacity'],
             })
+        user_names = [db.user_name_from_id(user_id) for user_id in project['user_ids']]
+        project_list.append({
+            'id': project['projectID'],
+            'hardwareSets': hw_sets,
+            'users': user_names,
+        })
     return jsonify(project_list)
 
 
@@ -174,7 +183,7 @@ def join_project():
     Endpoint for joining a project.
 
     Parameters:
-    - username (str): The username of the user joining the project.
+    - userid (str): The userid of the user.
     - projectid (int) : The id of the project
 
     Returns:
@@ -185,7 +194,7 @@ def join_project():
         - If the user successfully joins the project, returns {"message": "Project joined", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = encrypt(data.get('username'))
+    userID = encrypt(data.get('userid'))
     project_id = data.get('projectid')
     #check if user exists
     if db.user_exist(userID) == False:
@@ -206,7 +215,7 @@ def leave_project():
     Endpoint for leaving a project.
 
     Parameters:
-    - username (str): The username of the user leaving the project.
+    - userid (str): The userid of the user.
     - projectid (int) : The id of the project
 
     Returns:
@@ -216,7 +225,7 @@ def leave_project():
         - If the user successfully leaves the project, returns {"message": "Project left", "status": "success"} with status code 200.
     """
     data = request.json
-    userID = encrypt(data.get('username'))
+    userID = encrypt(data.get('userid'))
     project_id = data.get('projectid')
     if db.user_exist(userID) == False:
         return jsonify({"message": "User not found", "status": "fail"}), 404
@@ -286,7 +295,7 @@ def checkout_hardware():
         Exceeds availability: status code 400, {"message": "Exceeds availability"}
     '''
     data = request.json
-    projject_id = data.get('project_id')
+    #project_id = data.get('project_id')
     hw_set_id = data.get('hw_set_id')
     qty = data.get('qty')
     hardware_set = db.hwSet_get(hw_set_id)
@@ -317,7 +326,7 @@ def checkin_hardware():
         Exceeds capacity: status code 400, {"message": "Exceeds capacity"}
     '''
     data = request.json
-    project_id = data.get('project_id')
+    #project_id = data.get('project_id')
     hw_set_id = data.get('hw_set_id')
     qty = data.get('qty')
     hardware_set = db.hwSet_get(hw_set_id)

@@ -21,11 +21,12 @@ def user_exist(userID):
     return True
 
 
-def user_new(userID, encrypted_password):
+def user_new(userID, userPW, username):
     if not user_exist(userID):
         newUser = {
             "userID" :userID,
-            "userPW" : encrypted_password,
+            "userPW" : userPW,
+            "username" : username,
             "projects" : []
         }
         userDB.insert_one(newUser)
@@ -69,25 +70,30 @@ def user_remove_project(userID, projectID):
     newvalues = {"$pull": {"projects": projectID}}
     userDB.update_one(myquery, newvalues)
 
+def user_name_from_id(userID):
+    myquery = {"userID": userID}
+    user = userDB.find_one(myquery)
+    return user["username"]
+
 
 # ********** Project Functions **********
 projectDB = db["projects"]
 
 def get_all_projects():
-    #return list(projectDB.find())
-    return [
-        {
-            'projectID': 1,
-            'hardwareSets': [1, 2],
-            'users': ['user1', 'user2'],
-        },
-        {
-            'projectID': 2,
-            'hardwareSets': [1, 2],
-            'users': ['user3', 'user4'],
-        },
-        # Add more projects as needed
-    ]
+    return list(projectDB.find())
+    # return [
+    #     {
+    #         'projectID': 1,
+    #         'hardwareSets': [1, 2],
+    #         'users': ['user1', 'user2'],
+    #     },
+    #     {
+    #         'projectID': 2,
+    #         'hardwareSets': [1, 2],
+    #         'users': ['user3', 'user4'],
+    #     },
+    #     # Add more projects as needed
+    # ]
 
 def get_project(projectID):
     myquery={"projectID":projectID}
@@ -105,7 +111,7 @@ def project_new(projectName,description,projectID):
             "description" : description,
             "projectID" :projectID,
             "hardwareSets" : [1, 2],
-            "users" : []
+            "user_ids" : []
         }
     result = projectDB.insert_one(newProject)
     return result.inserted_id
@@ -124,7 +130,7 @@ def project_modify(projectID,hardwareSets,users,description,projectName):
         project = get_project(projectID)
         if hardwareSets != None:
             project["hardwareSets"] = hardwareSets
-            project["users"] = users
+            project["user_ids"] = users
             project["description"] = description
             project["projectName"] = projectName
         myquery={"projectID":projectID}
@@ -135,12 +141,12 @@ def project_modify(projectID,hardwareSets,users,description,projectName):
 
 def project_add_member(projectID, username):
     myquery = {"projectID": projectID}
-    newvalues = {"$push": {"users": username}}
+    newvalues = {"$push": {"user_ids": username}}
     projectDB.update_one(myquery, newvalues)
 
 def project_remove_member(projectID, username):
     myquery = {"projectID": projectID}
-    newvalues = {"$pull": {"users": username}}
+    newvalues = {"$pull": {"user_ids": username}}
     projectDB.update_one(myquery, newvalues)
 
 # ********** Hardware Set Functions **********
