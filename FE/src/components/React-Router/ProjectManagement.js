@@ -37,7 +37,7 @@ const ProjectManagement = () => {
         // Make a POST request to /NewUser with the username and password
     let id = projects[i].id;
     console.log("Project ID:", id);
-const response = await fetch("/projects/checkin", {
+const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
@@ -79,7 +79,7 @@ async function handleCheckInHWSet2(i, quantity) {
         // Make a POST request to /NewUser with the username and password
     let id = projects[i].id;
     console.log("Project ID:", id);
-const response = await fetch("/projects/checkin", {
+const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
@@ -124,7 +124,7 @@ async function handleCheckOutHWSet1(i, quantity) {
             // Make a POST request to /NewUser with the username and password
         let id = projects[i].id;
         console.log("Project ID:", id);
-    const response = await fetch("/projects/checkout", {
+    const response = await fetch("/checkout", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
@@ -168,7 +168,7 @@ async function handleCheckOutHWSet2(i, quantity) {
         // Make a POST request to /NewUser with the username and password
     let id = projects[i].id;
     console.log("Project ID:", id);
-const response = await fetch("/projects/checkout", {
+const response = await fetch("/checkout", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
