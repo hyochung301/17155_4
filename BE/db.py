@@ -74,7 +74,20 @@ def user_remove_project(userID, projectID):
 projectDB = db["projects"]
 
 def get_all_projects():
-    return list(projectDB.find())
+    #return list(projectDB.find())
+    return [
+        {
+            'projectID': 1,
+            'hardwareSets': [1, 2],
+            'users': ['user1', 'user2'],
+        },
+        {
+            'projectID': 2,
+            'hardwareSets': [1, 2],
+            'users': ['user3', 'user4'],
+        },
+        # Add more projects as needed
+    ]
 
 def get_project(projectID):
     myquery={"projectID":projectID}
