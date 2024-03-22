@@ -40,7 +40,7 @@ const ProjectManagement = () => {
 const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
 });
 
 // Parse the response as JSON
@@ -82,7 +82,7 @@ async function handleCheckInHWSet2(i, quantity) {
 const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
 });
 
 // Parse the response as JSON
@@ -127,7 +127,7 @@ async function handleCheckOutHWSet1(i, quantity) {
     const response = await fetch("/checkout", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
+        body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
     });
 
     // Parse the response as JSON
@@ -171,7 +171,7 @@ async function handleCheckOutHWSet2(i, quantity) {
 const response = await fetch("/checkout", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
 });
 
 // Parse the response as JSON
@@ -209,11 +209,12 @@ renderProjects();
     const handleExistingSubmit = async (e) => {
         console.log("{Existing Project ID}:", ExistingID);
         setExistingID(ExistingID);
+        let name = username;
         // Make a POST request to /join-project with the username and projectID (should it be name instead?)
         const response = await fetch("/join-project", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({username, ExistingID})
+        body: JSON.stringify({username:name, projectid:parseInt(ExistingID)})
     });
     // - JSON response with a message and status code:
     // - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
