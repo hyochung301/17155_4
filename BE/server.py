@@ -166,6 +166,7 @@ def get_projects():
             })
         project_list.append({
             'id': project['projectID'],
+            'projectName' : project['projectName']
             'hardwareSets': hw_sets,
             'users': project['users'],
         })
