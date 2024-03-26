@@ -1,10 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignOutButton = () => {
     const handleLogout = () => {
-        // Add your logout logic here
-        // For example, you can clear the user session or redirect to the login page
         window.location.href = '/login';
+        navigate(`/`);
     };
 
     return (
