@@ -303,7 +303,7 @@ renderProjects();
                 <>
                 
                 <Project
-                name={project.name}
+                name={project.projectName}
                 capacity1={project.hardwareSets[0].capacity}
                 capacity2={project.hardwareSets[1].capacity}
                 checkedout1={project.hardwareSets[0].available}
