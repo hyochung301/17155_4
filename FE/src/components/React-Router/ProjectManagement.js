@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Project from './Projects';
 import CreateNewProject from './CreateNewProject';
 import JoinExistingProject from './JoinExistingProject';
+import SignOutButton from './SignOutButton';
 
 const ProjectManagement = () => {
     let { username } = useParams();
@@ -325,7 +326,7 @@ renderProjects();
         <>
         <h1>Project Management</h1>
             <p>Welcome! {username}</p>
-       
+            <SignOutButton/> 
         <br/>
         <CreateNewProject
            handleProjectNameChange={handleProjectNameChange}
