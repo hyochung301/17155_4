@@ -28,6 +28,31 @@ const ProjectManagement = () => {
         console.log("Project Name:", ProjectName);
         console.log("Description:", Description);
         console.log("Project ID:", NewProjectID);
+        // Make a POST request to /new-project with the username and password
+        // Parameters:
+        // - projectid (int) : The id of the new project
+        // - projectDescription (str) : The description of the new project
+        // - projectName (str) : The name of the new project
+        const response = await fetch("/new-project", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({projectid:parseInt(NewProjectID), projectDescription:(Description), projectName:ProjectName})
+        });
+        const data = await response.json(); //save response into data
+        console.log(data);
+        // - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
+        // - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
+        if (data.status === "success" ) {
+            console.log("Project Created")
+            alert("Project Created");
+        }
+        else if (data.message === "Missing Data!") {
+            console.log("Missing Data!");
+            alert("Missing Data!");
+        }
+
+
+
     };
 
 
@@ -40,7 +65,7 @@ const ProjectManagement = () => {
 const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
 });
 
 // Parse the response as JSON
@@ -82,7 +107,7 @@ async function handleCheckInHWSet2(i, quantity) {
 const response = await fetch("/checkin", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
 });
 
 // Parse the response as JSON
@@ -127,7 +152,7 @@ async function handleCheckOutHWSet1(i, quantity) {
     const response = await fetch("/checkout", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:1})
+        body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
     });
 
     // Parse the response as JSON
@@ -144,9 +169,15 @@ async function handleCheckOutHWSet1(i, quantity) {
     
     
     }
+    else if (data.message === "Exceeds availability") {
+        console.log("Exceeds availability");
+        alert("Exceeds availability");
+    
+    
+    }
     else if (data.message === "Checked out successfully") {
         console.log("Checked out successfully");
-        alert("Checked in successfully");
+        alert("Checked out successfully");
     
     }
     else if (data.message === "Invalid Project ID") {
@@ -171,7 +202,7 @@ async function handleCheckOutHWSet2(i, quantity) {
 const response = await fetch("/checkout", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({qty:quantity, project_id:id, hw_set_id:2})
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
 });
 
 // Parse the response as JSON
@@ -187,8 +218,14 @@ else if (data.message === "Exceeds capacity") {
 
 
 }
+else if (data.message === "Exceeds availability") {
+    console.log("Exceeds availability");
+    alert("Exceeds availability");
+
+
+}
 else if (data.message === "Checked out successfully") {
-    console.log("Checked in successfully");
+    console.log("Checked out successfully");
     alert("Checked in successfully");
 
 }
@@ -209,11 +246,12 @@ renderProjects();
     const handleExistingSubmit = async (e) => {
         console.log("{Existing Project ID}:", ExistingID);
         setExistingID(ExistingID);
+        let name = username;
         // Make a POST request to /join-project with the username and projectID (should it be name instead?)
         const response = await fetch("/join-project", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({username, ExistingID})
+        body: JSON.stringify({username:name, projectid:parseInt(ExistingID)})
     });
     // - JSON response with a message and status code:
     // - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
@@ -266,10 +304,10 @@ renderProjects();
                 
                 <Project
                 name={project.name}
-                capacity1={project.capacity1}
-                capacity2={project.capacity2}
-                checkedout1={project.checkedout1}
-                checkedout2={project.checkedout2}
+                capacity1={project.hardwareSets[0].capacity}
+                capacity2={project.hardwareSets[1].capacity}
+                checkedout1={project.hardwareSets[0].available}
+                checkedout2={project.hardwareSets[1].available}
             
                 id={project.id}
 
@@ -300,10 +338,11 @@ renderProjects();
             handleExistingSubmit={handleExistingSubmit}/>
             
         
-        {renderProjects()}
+        
         <br/>
         {/* the code that i am putting below is to test what the BE passes when i make a call to /projects */}
         <button onClick={fetchProjects}>View Your Projects</button>
+        {renderProjects()}
         </>
 
 
