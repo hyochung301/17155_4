@@ -2,8 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SignOutButton = () => {
+    const navigate = useNavigate();
     const handleLogout = () => {
-        window.location.href = '/login';
+        //window.location.href = '/login';
         navigate(`/`);
     };
 
