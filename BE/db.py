@@ -1,13 +1,16 @@
 from pymongo.mongo_client import MongoClient
+import os
 
-uri = "mongodb+srv://Sam:<password I shared in group chat>@cluster0.ynnzx4e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+pw = os.environ.get('MONGO_PW')
+#pw = "UTECE"
+uri = f"mongodb+srv://Sam:{pw}@cluster0.ynnzx4e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # Create a new client and connect to the server
 client = MongoClient(uri)
 
 # Select your database
 db = client["projectDB"]
 
-
+# ********** User Functions **********
 userDB = db["users"]
 
 def user_exist(userID):
@@ -18,15 +21,17 @@ def user_exist(userID):
     return True
 
 
-def user_new(userID,encrypted_password):
+def user_new(userID, encrypted_password):
     if not user_exist(userID):
         newUser = {
             "userID" :userID,
-            "userPW" : encrypted_password
+            "userPW" : encrypted_password,
+            "projects" : []
         }
         userDB.insert_one(newUser)
     else:
         return "user exists" # will probably need to change this to an actual error code system
+    
 
 def user_delete(userID):
     if user_exist(userID):
@@ -64,6 +69,8 @@ def user_remove_project(userID, projectID):
     newvalues = {"$pull": {"projects": projectID}}
     userDB.update_one(myquery, newvalues)
 
+
+# ********** Project Functions **********
 projectDB = db["projects"]
 
 def get_all_projects():
@@ -79,11 +86,13 @@ def project_exist(projectID):
         return False
     return True
 
-def project_new(hardwareSets,users): #project ID's should be created automatically
+def project_new(projectName,description,projectID):
     newProject = {
-            #"projectID" :projectID,
-            "hardwareSets" : hardwareSets,
-            "users" : users
+            "projectName" : projectName,
+            "description" : description,
+            "projectID" :projectID,
+            "hardwareSets" : [1, 2],
+            "users" : []
         }
     result = projectDB.insert_one(newProject)
     return result.inserted_id
@@ -97,12 +106,14 @@ def project_delete(projectID):
 
 
 
-def project_modify(projectID,hardwareSets,users):
+def project_modify(projectID,hardwareSets,users,description,projectName):
     if project_exist(projectID):
         project = get_project(projectID)
         if hardwareSets != None:
             project["hardwareSets"] = hardwareSets
             project["users"] = users
+            project["description"] = description
+            project["projectName"] = projectName
         myquery={"projectID":projectID}
         projectDB.update_one(myquery,project)
     else:
@@ -118,6 +129,8 @@ def project_remove_member(projectID, username):
     myquery = {"projectID": projectID}
     newvalues = {"$pull": {"users": username}}
     projectDB.update_one(myquery, newvalues)
+
+# ********** Hardware Set Functions **********
 
 hwSetDB = db["hardware_sets"]
 

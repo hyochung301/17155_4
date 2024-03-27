@@ -1,3 +1,6 @@
+//not in use, but for refernce only
+
+
 import React, { useState } from 'react';
 import Form from './Forms';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -19,7 +22,7 @@ function LogInPage() {
         setUsername(value);
     };
 
-    // Function to handle password input change
+    // Function to handle password input changes
     const handlePasswordChange = (value) => {
         setPassword(value);
     };

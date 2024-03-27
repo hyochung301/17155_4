@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Project from './Projects';
 import CreateNewProject from './CreateNewProject';
 import JoinExistingProject from './JoinExistingProject';
+import SignOutButton from './SignOutButton';
 
 const ProjectManagement = () => {
     let { username } = useParams();
@@ -28,14 +29,123 @@ const ProjectManagement = () => {
         console.log("Project Name:", ProjectName);
         console.log("Description:", Description);
         console.log("Project ID:", NewProjectID);
+        // Make a POST request to /new-project with the username and password
+        // Parameters:
+        // - projectid (int) : The id of the new project
+        // - projectDescription (str) : The description of the new project
+        // - projectName (str) : The name of the new project
+        const response = await fetch("/new-project", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({projectid:parseInt(NewProjectID), projectDescription:(Description), projectName:ProjectName})
+        });
+        const data = await response.json(); //save response into data
+        console.log(data);
+        // - If the hardwareset or users is empty {"message": "Missing Data!", "status": "fail"} with status code 400.
+        // - If the user successfully creates the project, returns {"message": "Project Created", "id": id, "status": "success"} with status code 200.
+        if (data.status === "success" ) {
+            console.log("Project Created")
+            alert("Project Created");
+        }
+        else if (data.message === "Missing Data!") {
+            console.log("Missing Data!");
+            alert("Missing Data!");
+        }
+
+
+
     };
-    function handleCheckInHWSet1(i, quantity) {
-        console.log("Checkin",quantity, "Hardware Set 1 for project", i);
-      }
-    function handleCheckInHWSet2(i, quantity) {
-        console.log("Checkin",quantity, "Hardware Set 2 for project", i);
-      }
-    async function handleCheckOutHWSet1(i, quantity) {
+
+
+
+    async function handleCheckInHWSet1(i, quantity) {
+        console.log("CheckIn",quantity, "Hardware Set 1 for project", i);
+        // Make a POST request to /NewUser with the username and password
+    let id = projects[i].id;
+    console.log("Project ID:", id);
+const response = await fetch("/checkin", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
+});
+
+// Parse the response as JSON
+const data = await response.json();
+console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Checked in successfully") {
+    console.log("Checked in successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
+  }
+
+
+
+
+
+async function handleCheckInHWSet2(i, quantity) {
+        console.log("CheckIn",quantity, "Hardware Set 2 for project", i);
+        // Make a POST request to /NewUser with the username and password
+    let id = projects[i].id;
+    console.log("Project ID:", id);
+const response = await fetch("/checkin", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
+});
+
+// Parse the response as JSON
+const data = await response.json();
+console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Checked in successfully") {
+    console.log("Checked in successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
+
+  }
+
+
+
+
+
+
+
+async function handleCheckOutHWSet1(i, quantity) {
         console.log("Checkout",quantity, "Hardware Set 1 for project", i);
             // Make a POST request to /NewUser with the username and password
         let id = projects[i].id;
@@ -43,28 +153,106 @@ const ProjectManagement = () => {
     const response = await fetch("/checkout", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({qty:quantity, id:id, hws:1})
+        body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:1})
     });
 
     // Parse the response as JSON
     const data = await response.json();
     console.log(data);
-      }
+      
+      if (data.message === "Invalid quantity" ) {
+        console.log("Invalid quantity");
+        alert("Invalid quantity");
+    }
+    else if (data.message === "Exceeds capacity") {
+        console.log("Exceeds capacity");
+        alert("Exceeds capacity");
+    
+    
+    }
+    else if (data.message === "Exceeds availability") {
+        console.log("Exceeds availability");
+        alert("Exceeds availability");
+    
+    
+    }
+    else if (data.message === "Checked out successfully") {
+        console.log("Checked out successfully");
+        alert("Checked out successfully");
+    
+    }
+    else if (data.message === "Invalid Project ID") {
+        console.log("Invalid Project ID");
+        alert("Invalid Project ID");
+    
+    }
+    fetchProjects();
+    renderProjects();
+}
 
 
-      function handleCheckOutHWSet2(i, quantity) {
+
+
+
+
+async function handleCheckOutHWSet2(i, quantity) {
         console.log("Checkout",quantity, "Hardware Set 2 for project", i);
-      }
+        // Make a POST request to /NewUser with the username and password
+    let id = projects[i].id;
+    console.log("Project ID:", id);
+const response = await fetch("/checkout", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({qty:parseInt(quantity), project_id:parseInt(id), hw_set_id:2})
+});
+
+// Parse the response as JSON
+const data = await response.json();
+console.log(data);
+if (data.message === "Invalid quantity" ) {
+    console.log("Invalid quantity");
+    alert("Invalid quantity");
+}
+else if (data.message === "Exceeds capacity") {
+    console.log("Exceeds capacity");
+    alert("Exceeds capacity");
+
+
+}
+else if (data.message === "Exceeds availability") {
+    console.log("Exceeds availability");
+    alert("Exceeds availability");
+
+
+}
+else if (data.message === "Checked out successfully") {
+    console.log("Checked out successfully");
+    alert("Checked in successfully");
+
+}
+else if (data.message === "Invalid Project ID") {
+    console.log("Invalid Project ID");
+    alert("Invalid Project ID");
+
+}
+fetchProjects();
+renderProjects();
+  }
+
+
+
+
 
 
     const handleExistingSubmit = async (e) => {
         console.log("{Existing Project ID}:", ExistingID);
         setExistingID(ExistingID);
+        let name = username;
         // Make a POST request to /join-project with the username and projectID (should it be name instead?)
         const response = await fetch("/join-project", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({username, ExistingID})
+        body: JSON.stringify({username:name, projectid:parseInt(ExistingID)})
     });
     // - JSON response with a message and status code:
     // - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
@@ -100,6 +288,7 @@ const ProjectManagement = () => {
     };
 
     const fetchProjects = async () => {
+        console.log("The view your projects button has been clicked");
         // Fetch projects data from the server
         const response = await fetch("/projects");
         const data = await response.json();
@@ -115,11 +304,11 @@ const ProjectManagement = () => {
                 <>
                 
                 <Project
-                name={project.name}
-                capacity1={project.capacity1}
-                capacity2={project.capacity2}
-                checkedout1={project.checkedout1}
-                checkedout2={project.checkedout2}
+                name={project.projectName}
+                capacity1={project.hardwareSets[0].capacity}
+                capacity2={project.hardwareSets[1].capacity}
+                checkedout1={project.hardwareSets[0].available}
+                checkedout2={project.hardwareSets[1].available}
             
                 id={project.id}
 
@@ -137,7 +326,7 @@ const ProjectManagement = () => {
         <>
         <h1>Project Management</h1>
             <p>Welcome! {username}</p>
-       
+            <SignOutButton/> 
         <br/>
         <CreateNewProject
            handleProjectNameChange={handleProjectNameChange}
@@ -150,10 +339,11 @@ const ProjectManagement = () => {
             handleExistingSubmit={handleExistingSubmit}/>
             
         
-        {renderProjects()}
+        
         <br/>
         {/* the code that i am putting below is to test what the BE passes when i make a call to /projects */}
-        <button onClick={fetchProjects}>Debugger</button>
+        <button onClick={fetchProjects}>View Your Projects</button>
+        {renderProjects()}
         </>
 
 

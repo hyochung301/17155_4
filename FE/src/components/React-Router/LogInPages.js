@@ -98,7 +98,7 @@ const handleNewUserSubmit = async (e) => {
     const response = await fetch("/register", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({userID:Newusername, password:Newpassword})
+        body: JSON.stringify({username:Newusername, password:Newpassword})
     });
 
     // Parse the response as JSON
