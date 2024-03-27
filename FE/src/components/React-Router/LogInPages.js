@@ -194,7 +194,13 @@ const handleNewUserSubmit = async (e) => {
 
         </div>
         <div>
-            <img src="UT logo.png"/>
+        <br />  
+        <br />
+        <br />
+
+        <center>
+            <img src="./components/React-Router/UT logo.png" alt='UT Logo'/>
+        </center>
         </div>
         
 
