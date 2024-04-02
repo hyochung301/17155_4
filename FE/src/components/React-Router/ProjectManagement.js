@@ -297,12 +297,12 @@ renderProjects();
         console.log("Projects:", projects);
     };
 
-const filterProjects = (projects) => {
+const filterProjects = (p) => {
     // Code logic for filtering projects
     let filtered = [];
-    for (let i = 0; i < projects.length; i++) {
-        if (projects[i].users.includes(username)) {
-            filtered.push(projects[i]);
+    for (let i = 0; i < p.length; i++) {
+        if (p[i].users.includes(username)) {
+            filtered.push(p[i]);
         }
     }
     return filtered;
