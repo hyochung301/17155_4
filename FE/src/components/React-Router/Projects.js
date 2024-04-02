@@ -16,7 +16,7 @@ function handleCheckOutHWSet1() {
     props.handleCheckOutHWSet2(quantity);
   }
   function handleLeave() {
-    console.log("Leaving project");
+    props.handleLeave();
   }
 
   return (

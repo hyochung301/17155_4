@@ -296,6 +296,40 @@ renderProjects();
         console.log(data);
         console.log("Projects:", projects);
     };
+const leaveProject = async (i) => {
+    let name = username;
+    let id = projects[i].id;
+    console.log("Project ID:", id);
+    // Make a POST request to /leave-project with the username and projectID
+        const response = await fetch("/leave-project", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username:name, projectid:parseInt(id)})
+    });
+    const data = await response.json();
+    console.log(data);
+    Returns:
+    // - JSON response with a message and status code:
+    //     - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
+    //     - If the user is not a member of the project, returns {"message": "Not a member of the project", "status": "fail"} with status code 400.
+    //     - If the user successfully leaves the project, returns {"message": "Project left", "status": "success"} with status code 200.
+    if (data.status === "success") {
+        console.log("Project left");
+        alert("Project left");
+    }
+    else if (data.message === "Not a member of the project") {
+        console.log("Not a member of the project");
+        alert("Not a member of the project");
+    }
+    else if (data.message === "User not found" ){
+        console.log("User not found");
+        alert("User not found");
+    }
+
+
+
+
+}
 
 const filterProjects = (p) => {
     // Code logic for filtering projects
@@ -327,7 +361,9 @@ const filterProjects = (p) => {
                 handleCheckInHWSet1={(quantity) => handleCheckInHWSet1(index, quantity)}
                 handleCheckInHWSet2={(quantity) => handleCheckInHWSet2(index,quantity)}
                 handleCheckOutHWSet1={(quantity) => handleCheckOutHWSet1(index,quantity)}
-                handleCheckOutHWSet2={(quantity) => handleCheckOutHWSet2(index,quantity)}/>
+                handleCheckOutHWSet2={(quantity) => handleCheckOutHWSet2(index,quantity)}
+                handleLeave={() => leaveProject(index)}/>
+                
                 <br/>
                 </>
                 
