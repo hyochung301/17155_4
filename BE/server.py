@@ -168,7 +168,7 @@ def get_projects():
             'id': project['projectID'],
             'projectName' : project['projectName'],
             'hardwareSets': hw_sets,
-            'users': project['users'],
+            'users': db.decryptUsernames(project['Users']),
         })
     return jsonify(project_list)
 

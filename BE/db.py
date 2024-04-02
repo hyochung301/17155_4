@@ -1,6 +1,6 @@
 from pymongo.mongo_client import MongoClient
 import os
-
+from BE.encryption import decrypt
 pw = os.environ.get('MONGO_PW')
 #pw = "UTECE"
 uri = f"mongodb+srv://Sam:{pw}@cluster0.ynnzx4e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -50,6 +50,12 @@ def user_check_password(userID,encrypted_password):
         return True
     else:
         return False
+    
+def decryptUsernames(usernames):
+    decryptedUsernames = []
+    for username in usernames:
+        decryptedUsernames.append(decrypt(username, 3, 1))
+    return decryptedUsernames
 
 # check if user is already in project
 # true if user is already in project
