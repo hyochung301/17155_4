@@ -325,6 +325,8 @@ const leaveProject = async (i) => {
         console.log("User not found");
         alert("User not found");
     }
+    fetchProjects();
+    renderProjects();
 
 
 
