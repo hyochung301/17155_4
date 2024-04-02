@@ -272,7 +272,8 @@ renderProjects();
         console.log("User not found");
     }
     
-
+    fetchProjects();
+    renderProjects();
 
     };
     
