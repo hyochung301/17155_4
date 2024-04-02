@@ -227,7 +227,7 @@ else if (data.message === "Exceeds availability") {
 }
 else if (data.message === "Checked out successfully") {
     console.log("Checked out successfully");
-    alert("Checked in successfully");
+    alert("Checked out successfully");
 
 }
 else if (data.message === "Invalid Project ID") {
@@ -308,7 +308,7 @@ const leaveProject = async (i) => {
     });
     const data = await response.json();
     console.log(data);
-    Returns:
+    // Returns:
     // - JSON response with a message and status code:
     //     - If the user is not found, returns {"message": "User not found", "status": "fail"} with status code 404.
     //     - If the user is not a member of the project, returns {"message": "Not a member of the project", "status": "fail"} with status code 400.
