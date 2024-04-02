@@ -292,9 +292,21 @@ renderProjects();
         // Fetch projects data from the server
         const response = await fetch("/projects");
         const data = await response.json();
-        setProjects(data); // Update projects state with fetched data
+        setProjects(filterProjects(data)); // Update projects state with fetched data
         console.log(data);
+        console.log("Projects:", projects);
     };
+
+const filterProjects = (p) => {
+    // Code logic for filtering projects
+    let filtered = [];
+    for (let i = 0; i < p.length; i++) {
+        if (p[i].users.includes(username)) {
+            filtered.push(p[i]);
+        }
+    }
+    return filtered;
+};
 
     // Render Project components for each project in the projects array
         const renderProjects = () => {
@@ -318,6 +330,7 @@ renderProjects();
                 handleCheckOutHWSet2={(quantity) => handleCheckOutHWSet2(index,quantity)}/>
                 <br/>
                 </>
+                
             ));
     };
     
